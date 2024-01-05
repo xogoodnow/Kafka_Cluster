@@ -9,7 +9,7 @@ resource "hcloud_server" "kafka" {
 
 
 resource "hcloud_server" "monitoring" {
-  count = 2
+  count = 1
   name         = "monitoring-${count.index}"
   image        = var.image_name
   server_type  = "cx21"
