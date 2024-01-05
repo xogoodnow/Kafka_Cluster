@@ -1,0 +1,95 @@
+---
+- name: check connectivity
+  ping:
+    data: alive
+
+
+- name: Create the required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0777"
+  with_items:
+    - /root/kafka
+    - /root/kafka/docker/
+    - /root/kafka/config/
+    - /root/kafka/config/certs
+    - /root/kafka/data/
+
+
+- name: Pull the kafka image
+  docker_image:
+    name: "{{ kafka_base_image }}:{{ kafka_image_version }}"
+    source: pull
+
+
+
+
+- name: Set the compose file for kafka-1
+  template:
+    src: "templates/docker-compose-kafka-1.yaml.j2"
+    dest: "/root/kafka/docker/docker-compose.yaml"
+  when: mode == 'kafka' and kafka_number == '1'
+
+
+
+- name: Set the compose file for kafka-2
+  template:
+    src: "templates/docker-compose-kafka-2.yaml.j2"
+    dest: "/root/kafka/docker/docker-compose.yaml"
+  when: mode == 'kafka' and kafka_number == '2'
+
+
+- name: Set the compose file for kafka-3
+  template:
+    src: "templates/docker-compose-kafka-3.yaml.j2"
+    dest: "/root/kafka/docker/docker-compose.yaml"
+  when: mode == 'kafka' and kafka_number == '3'
+
+
+- name: Run the containers
+  community.general.docker_compose:
+    project_src: "/root/kafka/docker/"
+    pull: true
+    recreate: never
+    state: present
+    restarted: false
+    remove_orphans: no
+    remove_volumes: false
+
+
+
+
+
+#- name: Run the master redis container
+#  docker_container:
+#    name: "{{ ansible_hostname }}-redis-master"
+#    image: redis:{{ redis_version }}
+#    restart_policy: unless-stopped
+#    state: started
+#    network_mode: host
+#    command: redis-server /etc/redis/cluster/7000/redis_7000.conf
+#    volumes:
+#      - /var/lib/redis/7000/:/var/lib/redis/7000/
+#      - /etc/redis/cluster/7000/redis_7000.conf:/etc/redis/cluster/7000/redis_7000.conf
+##      - /var/run/redis/redis_7000.pid:/var/run/redis/redis_7000.pid
+##      - /var/log/redis/redis_7000.log:/var/log/redis/redis_7000.log
+#
+#
+#
+#
+#- name: Run the slave redis container
+#  docker_container:
+#    name: "{{ ansible_hostname }}-redis-slave"
+#    image: redis:{{ redis_version }}
+#    restart_policy: unless-stopped
+#    network_mode: host
+#    state: started
+#    command: redis-server /etc/redis/cluster/7001/redis_7001.conf
+#    volumes:
+#      - /var/lib/redis/7001/:/var/lib/redis/7001/
+#      - /etc/redis/cluster/7001/redis_7001.conf:/etc/redis/cluster/7001/redis_7001.conf
+##      - /var/run/redis/redis_7001.pid:/var/run/redis/redis_7001.pid
+##      - /var/log/redis/redis_7001.log:/var/log/redis/redis_7001.log
