@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  kafka_1:
+    image: "{{ kafka_base_image }}:{{ kafka_image_version }}"
+    container_name: kafka-1-{{ ansible_hostname }}-{{ ansible_play_hosts_all.index(inventory_hostname) }}
+    hostname: kafka-1
+    network_mode: host
+    # ports:
+    #   - "9092:9092"
+    #   - "9093:9093"
+    #   - "9094:9094"
+    environment:
+      ALLOW_PLAINTEXT_LISTENER: yes
+      BITNAMI_DEBUG: yes
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
+      KAFKA_BROKER_ID: 1
+      KAFKA_CFG_NODE_ID: 1
+      KAFKA_ENABLE_KRAFT: yes
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
+      KAFKA_CFG_PROCESS_ROLES: 'broker,controller'
+      KAFKA_KRAFT_CLUSTER_ID: "{{ kafka_cluster_id }}"
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT'
+      KAFKA_CFG_LISTENERS: 'INTERNAL://kafka-1:9092,CONTROLLER://kafka-1:9093,EXTERNAL://kafka-1:9094'
+      KAFKA_CFG_ADVERTISED_LISTENERS: 'INTERNAL://kafka-1:9092,EXTERNAL://kafka-1:9093'
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: '1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
