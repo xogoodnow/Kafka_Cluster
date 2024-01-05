@@ -15,7 +15,7 @@ module "servers" {
 
 
 
-module "Redis" {
+module "Kafka" {
   source = "./modules/Kafka"
   hcloud_token = var.hcloud_token
 }
