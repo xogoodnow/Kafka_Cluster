@@ -1,0 +1,31 @@
+---
+- name: setting up Kafka cluster
+  hosts: all
+  become: true
+  tasks:
+    - name: Include variables
+      include_vars: "all.yaml"
+
+    - name: Setting the basis on all nodes
+      include_role:
+        name: "{{ item }}"
+      with_items:
+        - $PWD/roles/Pre_Setup
+        - $PWD/roles/Install_Docker
+
+
+    - name: Install and Configure Kafka instances
+      include_role:
+        name: "{{ item }}"
+      with_items:
+        - $PWD/roles/Install_Kafka_Dockerized
+      when: mode == 'kafka'
+
+
+
+    - name: Deploy Node exporter on all nodes
+      include_role:
+        name: "{{ item }}"
+      with_items:
+        - $PWD/roles/Node_Exporter
+      when: mode == 'monitoring'
