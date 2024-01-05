@@ -6,3 +6,4 @@ vmalert_version: latest
 alertmanager_version: latest
 kafka_base_image: bitnami/kafka
 kafka_image_version: 3.4.1
+kafka_cluster_id: ciWo7IWazngRchmPES6q5A==
