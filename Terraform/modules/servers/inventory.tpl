@@ -8,6 +8,7 @@ all:
                     ansible_user: root
                     mode: 'kafka'
                     init_cluster: ${index == 0 ? "'true'" : "'false'"}
+                    kafka_number: ${index == 0 ? "'1'" : index == 1 ? "'2'" : "'3'" }
             %{ endfor }
 
             %{ for index, ip in monitoring_ips }
