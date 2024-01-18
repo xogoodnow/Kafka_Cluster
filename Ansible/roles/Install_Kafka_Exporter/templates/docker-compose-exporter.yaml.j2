@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  kafka_exporter:
+    image: "{{ KAFKA_EXPORTER_BASE_IMAGE }}:{{ KAFKA_EXPORTER_VERSION }}"
+    container_name: "kafka-exporter-{{ ansible_hostname }}-{{ ansible_play_hosts_all.index(inventory_hostname) }} + 1"
+    network_mode: host
+    command: ["--kafka.server="kafka-{{ ansible_play_hosts_all.index(inventory_hostname) }} + 1":9094"]
+      KAFKA_BROKERS: "kafka-{{ ansible_play_hosts_all.index(inventory_hostname) }} + 1"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
