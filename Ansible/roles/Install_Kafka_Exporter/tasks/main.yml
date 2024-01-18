@@ -1,0 +1,48 @@
+---
+- name: check connectivity
+  ping:
+    data: alive
+
+
+- name: Create the required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0777"
+  with_items:
+    - /root/kafka/exporter
+    - /root/kafka/exporter/docker/
+
+
+
+- name: Pull the kafka image
+  docker_image:
+    name: "{{ KAFKA_KOWL_BASE_IMAGE }}:{{ KAFKA_KOWL_image_version }}"
+    source: pull
+
+
+
+
+- name: Set the compose file for kowl
+  template:
+    src: "templates/docker-compose-exporter.yaml.j2"
+    dest: "/root/kafka/exporter/docker/docker-compose.yaml"
+  when: mode == 'kafka'
+
+
+
+- name: Run the containers
+  community.general.docker_compose:
+    project_src: "/root/kafka/exporter/docker/"
+    pull: true
+    recreate: never
+    state: present
+    restarted: false
+    remove_orphans: no
+    remove_volumes: false
+
+
+
+
