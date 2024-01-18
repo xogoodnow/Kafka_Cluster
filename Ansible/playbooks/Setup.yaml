@@ -21,6 +21,19 @@
         - $PWD/roles/Install_Kafka_Dockerized
       when: mode == 'kafka'
 
+    - name: Set up Kafka exoprter
+      include_role:
+        name: "{{ item }}"
+      with_items:
+        - $PWD/roles/Install_Kafka_Exporter
+      when: mode == 'kafka'
+
+    - name: Set up Kafka Kowl
+      include_role:
+        name: "{{ item }}"
+      with_items:
+        - $PWD/roles/Install_Kafka_Kowl
+      when: mode == 'kafka'
 
 
     - name: Deploy Node exporter on all nodes
@@ -29,3 +42,4 @@
       with_items:
         - $PWD/roles/Node_Exporter
       when: mode == 'monitoring'
+
