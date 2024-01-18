@@ -4,6 +4,10 @@ services:
     image: "{{ kafka_base_image }}:{{ kafka_image_version }}"
     container_name: kafka-1-{{ ansible_hostname }}-{{ ansible_play_hosts_all.index(inventory_hostname) }}
     hostname: kafka-1
+    logging:
+      driver: json-file
+      options:
+        max-size: "5g"
     network_mode: host
     # ports:
     #   - "9092:9092"
