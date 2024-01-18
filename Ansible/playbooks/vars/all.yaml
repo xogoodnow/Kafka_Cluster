@@ -16,5 +16,6 @@ KAFKA_CLIENT_PASSWORDS: kafka-client
 KAFKA_CLIENT_USERS: kafka-password
 KAFKA_KOWL_BASE_IMAGE: quay.io/cloudhut/kowl
 KAFKA_KOWL_image_version: master
-
+KAFKA_EXPORTER_BASE_IMAGE: danielqsj/kafka-exporter
+KAFKA_EXPORTER_VERSION: latest
 
