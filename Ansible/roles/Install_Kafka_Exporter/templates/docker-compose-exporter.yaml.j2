@@ -5,7 +5,10 @@ services:
     container_name: "kafka-exporter-{{ ansible_hostname }}-{{ ansible_play_hosts_all.index(inventory_hostname) + 1 }}"
     network_mode: host
     command: ["--kafka.server=kafka-{{ ansible_play_hosts_all.index(inventory_hostname) + 1 }}:9094"]
-
+    logging:
+      driver: json-file
+      options:
+        max-size: "1g"
 
 
 
