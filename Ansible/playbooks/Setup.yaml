@@ -28,11 +28,11 @@
         - $PWD/roles/Install_Kafka_Exporter
       when: mode == 'kafka'
 
-    - name: Set up Kafka Kowl
+    - name: Set up Kafka GUI
       include_role:
         name: "{{ item }}"
       with_items:
-        - $PWD/roles/Install_Kafka_Kowl
+        - $PWD/roles/Install_Kafka_GUI
       when: mode == 'kafka'
 
 
