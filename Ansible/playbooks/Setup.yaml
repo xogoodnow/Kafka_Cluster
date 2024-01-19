@@ -13,23 +13,28 @@
         - $PWD/roles/Pre_Setup
         - $PWD/roles/Docker_Install
 
-
-    - name: Install and Configure Kafka instances
+    - name: Pre Setup Kafka And Generate Certificates
       include_role:
         name: "{{ item }}"
       with_items:
         - $PWD/roles/Kafka_Pre_Setup
+        - $PWD/roles/Kafka_Cert_Generation
+
+    - name: Install And Configure Kafka instances
+      include_role:
+        name: "{{ item }}"
+      with_items:
         - $PWD/roles/Kafka_Install_Dockerized
       when: mode == 'kafka'
 
-    - name: Set up Kafka Exoprter
+    - name: Set Up Kafka Exoprter
       include_role:
         name: "{{ item }}"
       with_items:
         - $PWD/roles/Kafka_Install_Exporter
       when: mode == 'kafka'
 
-    - name: Set up Kafka GUI
+    - name: Set Up Kafka GUI
       include_role:
         name: "{{ item }}"
       with_items:
@@ -37,7 +42,7 @@
       when: mode == 'kafka'
 
 
-    - name: Deploy Node exporter on all nodes
+    - name: Deploy Node Exporter On All Nodes
       include_role:
         name: "{{ item }}"
       with_items:
