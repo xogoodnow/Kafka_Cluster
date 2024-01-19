@@ -1,0 +1,1 @@
+## The certificates for kafka (JKS format)
