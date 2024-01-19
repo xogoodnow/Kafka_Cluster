@@ -1,0 +1,36 @@
+---
+- name: check connectivity
+  ping:
+    data: alive
+
+
+- name: install required package for generating JKS certs
+  apt:
+    pkg:
+      - openjdk-19-jre-headless
+      - openssl
+    state: present
+
+
+- name: Create the required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0777"
+  with_items:
+    - /root/Kafka
+    - /root/Kafka/Docker/
+    - /root/Kafka/Config/
+    - /root/Kafka/Config/Certs
+    - /root/Kafka/Data/
+    - /root/Kafka/Exporter
+    - /root/Kafka/Exporter/Docker/
+    - /root/Kafka/Gui
+    - /root/Kafka/Gui/Docker/
+
+
+
+
+
