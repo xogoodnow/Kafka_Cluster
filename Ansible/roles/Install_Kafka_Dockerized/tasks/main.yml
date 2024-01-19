@@ -4,20 +4,6 @@
     data: alive
 
 
-- name: Create the required directories
-  file:
-    path: "{{ item }}"
-    state: directory
-    owner: root
-    group: root
-    mode: "0777"
-  with_items:
-    - /root/kafka
-    - /root/kafka/docker/
-    - /root/kafka/config/
-    - /root/kafka/config/certs
-    - /root/kafka/data/
-
 
 - name: Pull the kafka image
   docker_image:
