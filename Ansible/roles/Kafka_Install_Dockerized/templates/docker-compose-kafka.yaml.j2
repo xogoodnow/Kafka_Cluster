@@ -91,13 +91,13 @@ services:
     volumes:
 {% set host_index = ansible_play_hosts_all.index(inventory_hostname) %}
 {% if host_index == 0 %}
-      - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.keystore-1.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro"
+      - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.keystore-first-1.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro"
       - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro"
 {% elif host_index == 1 %}
-      - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.keystore-2.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro"
+      - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.keystore-second-2.jks :/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro"
       - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro"
 {% elif host_index == 2 %}
-      - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.keystore-3.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro"
+      - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.keystore-third-3.jks  :/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro"
       - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro"
 {% endif %}
 
