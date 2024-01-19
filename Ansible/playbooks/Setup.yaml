@@ -18,6 +18,7 @@
       include_role:
         name: "{{ item }}"
       with_items:
+        - $PWD/roles/Kafka_Pre_Setup
         - $PWD/roles/Kafka_Install_Dockerized
       when: mode == 'kafka'
 
