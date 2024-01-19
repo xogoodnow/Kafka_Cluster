@@ -12,7 +12,7 @@
 
 - name: Copy file with owner and permissions
   ansible.builtin.copy:
-    src: /files/certs/
+    src: files/certs/
     dest: "{{ KAFKA_CERT_DIRECTORY }}"
     owner: root
     group: root
