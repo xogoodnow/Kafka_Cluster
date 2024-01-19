@@ -7,7 +7,7 @@
 
 - name: Pull the kafka image
   docker_image:
-    name: "{{ kafka_base_image }}:{{ kafka_image_version }}"
+    name: "{{ KAFKA_BASE_IMAGE }}:{{ KAFKA_IMAGE_VERSION }}"
     source: pull
 
 - name: Copy file with owner and permissions

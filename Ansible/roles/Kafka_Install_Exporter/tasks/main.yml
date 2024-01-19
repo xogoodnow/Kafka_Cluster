@@ -7,7 +7,7 @@
 
 - name: Pull the kafka image
   docker_image:
-    name: "{{ KAFKA_KOWL_BASE_IMAGE }}:{{ KAFKA_KOWL_image_version }}"
+    name: "{{ KAFKA_GUI_BASE_IMAGE }}:{{ KAFKA_GUI_IMAGE_VERSION }}"
     source: pull
 
 
