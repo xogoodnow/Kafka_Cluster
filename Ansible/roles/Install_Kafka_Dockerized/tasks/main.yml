@@ -29,24 +29,10 @@
 
 - name: Set the compose file for kafka-1
   template:
-    src: "templates/docker-compose-kafka-1.yaml.j2"
+    src: "templates/docker-compose-kafka.yaml.j2"
     dest: "/root/kafka/docker/docker-compose.yaml"
-  when: mode == 'kafka' and kafka_number == '1'
+  when: mode == 'kafka'
 
-
-
-- name: Set the compose file for kafka-2
-  template:
-    src: "templates/docker-compose-kafka-2.yaml.j2"
-    dest: "/root/kafka/docker/docker-compose.yaml"
-  when: mode == 'kafka' and kafka_number == '2'
-
-
-- name: Set the compose file for kafka-3
-  template:
-    src: "templates/docker-compose-kafka-3.yaml.j2"
-    dest: "/root/kafka/docker/docker-compose.yaml"
-  when: mode == 'kafka' and kafka_number == '3'
 
 
 - name: Run the containers
@@ -58,7 +44,6 @@
     restarted: false
     remove_orphans: no
     remove_volumes: false
-
 
 
 
