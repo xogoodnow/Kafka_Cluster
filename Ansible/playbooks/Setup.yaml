@@ -13,12 +13,21 @@
         - $PWD/roles/Pre_Setup
         - $PWD/roles/Docker_Install
 
-    - name: Pre Setup Kafka And Generate Certificates
+    - name: Pre Setup Kafka
       include_role:
         name: "{{ item }}"
       with_items:
         - $PWD/roles/Kafka_Pre_Setup
+      when: mode == 'kafka'
+
+
+    - name: Generate Certificates For Kafka
+      include_role:
+        name: "{{ item }}"
+      with_items:
         - $PWD/roles/Kafka_Cert_Generation
+      when: mode == 'kafka' and kafka_number == '1'
+
 
     - name: Install And Configure Kafka instances
       include_role:
