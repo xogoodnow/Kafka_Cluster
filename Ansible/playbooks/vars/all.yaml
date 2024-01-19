@@ -1,22 +1,23 @@
-name_server: 8.8.8.8
-vmagent_version: latest
-victoria_metrics_version: latest
-grafana_version: latest
-vmalert_version: latest
-alertmanager_version: latest
-kafka_base_image: bitnami/kafka
-kafka_image_version: 3.4.1
+NAME_SERVER: 8.8.8.8
+VMAGENT_VERSION: latest
+VICTORIA_METRICS_VERSION: latest
+GRAFANA_VERSION: latest
+VMALERT_VERSION: latest
+ALERTMANAGER_VERSION: latest
+KAFKA_BASE_IMAGE: bitnami/kafka
+KAFKA_IMAGE_VERSION: 3.4.1
 node_exporter_version: latest
-kafka_cluster_id: ciWo7IWazngRchmPES6q5A==
+KAFKA_CLUSTER_ID: ciWo7IWazngRchmPES6q5A==
 NODE_EXPORTER_VERSION: latest
 KAFKA_INTER_BROKER_USER: kafka-inter
 KAFKA_INTER_BROKER_PASSWORD: kafka-password
 KAFKA_CONTROLLER_USER: kafka-controller
 KAFKA_CONTROLLER_PASSWORD: kafka-password
-KAFKA_CLIENT_PASSWORDS: kafka-client
-KAFKA_CLIENT_USERS: kafka-password
-KAFKA_KOWL_BASE_IMAGE: quay.io/cloudhut/kowl
-KAFKA_KOWL_image_version: master
+KAFKA_CLIENT_PASSWORDS: kafka-password
+KAFKA_CLIENT_USERS: kafka-client
+KAFKA_GUI_BASE_IMAGE:  docker.redpanda.com/redpandadata/console #quay.io/cloudhut/kowl
+KAFKA_GUI_IMAGE_VERSION: latest
 KAFKA_EXPORTER_BASE_IMAGE: bitnami/kafka-exporter #danielqsj/kafka-exporter
 KAFKA_EXPORTER_VERSION: latest
-
+KAFKA_KEYSTORE_PASSWORD: kafkacertpass
+KAFKA_CERT_DIRECTORY: /root/kafka/config/certs
