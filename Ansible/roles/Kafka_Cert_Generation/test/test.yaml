@@ -1,0 +1,217 @@
+csr_path
+entrust_cert_type: STANDARD_SSL
+entrust_not_after: 3650
+force: no
+mode: '644'
+path:
+privatekey_passphrase:
+privatekey_path:
+provider: selfsigned
+selfsigned_create_subject_key_identifier: create_if_not_provided
+selfsigned_digest: "sha256"
+selfsigned_not_after: "+3650d"
+state: present
+unsafe_writes: no
+    subject:
+      commonName: ansible.com
+
+
+
+- name: Generate a Self Signed OpenSSL certificate
+  openssl_certificate:
+    path: /etc/ssl/crt/ansible.com.crt
+    privatekey_path: /etc/ssl/private/ansible.com.pem
+    csr_path: /etc/ssl/csr/ansible.com.csr
+    provider: selfsigned
+
+
+- name: Generate a Self Signed OpenSSL certificate
+ openssl_certificate:
+   path: /etc/ssl/crt/demo-kafka.crt
+   privatekey_path: /etc/ssl/private/demo-kafka.pem
+   csr_path: /etc/ssl/csr/demo-kafka.csr
+   provider: selfsigned
+   selfsigned_version: 3
+   selfsigned_digest: sha256
+   selfsigned_details:
+     countryName: "US"
+     stateOrProvinceName: "California"
+     localityName: "San Francisco"
+     organizationName: "My Company"
+     commonName: "Demo-Kafka"
+   days: 3650
+
+
+- name: Generate a private key
+ community.crypto.openssl_privatekey:
+   path: /root/kafka/config/certs/ca-key
+   size: 4096
+   type: RSA
+
+
+- name: Generate a Certificate Signing Request (CSR)
+ community.crypto.openssl_csr:
+   path: /path/to/ca-csr
+   privatekey_path: /path/to/ca-key
+   common_name: Demo-Kafka
+
+- name: Generate a self-signed certificate
+ community.crypto.x509_certificate:
+   path: /path/to/ca-cert
+   csr_path: /path/to/ca-csr
+   privatekey_path: /path/to/ca-key
+   provider: selfsigned
+   selfsigned_not_after: "+3650d"
+
+
+- name: Generate a Self Signed OpenSSL certificate
+  community.crypto.x509_certificate:
+    path: /etc/ssl/crt/ansible.com.crt
+    privatekey_path: /etc/ssl/private/ansible.com.pem
+    csr_path: /etc/ssl/csr/ansible.com.csr
+    provider: selfsigned
+
+    - name: Generate keystore with key and certificate for the Kafka server
+      command: >
+        keytool -genkey -keystore {{ kafka_ssl_keystore_path }}
+        -validity {{ kafka_ssl_validity_days }} -storepass {{ kafka_ssl_key_passphrase }}
+        -keypass {{ kafka_ssl_key_passphrase }} -dname 'CN={{ kafka_ssl_common_name }}'
+        -storetype pkcs12 -keyalg RSA
+      args:
+        creates: "{{ kafka_ssl_keystore_path }}"
+
+    - name: Generate a certificate signing request (CSR) for the Kafka server
+      command: >
+        keytool -keystore {{ kafka_ssl_keystore_path }} -certreq -file {{ kafka_ssl_cert_file }}
+        -storepass {{ kafka_ssl_key_passphrase }} -keypass {{ kafka_ssl_key_passphrase }}
+      args:
+        creates: "{{ kafka_ssl_cert_file }}"
+
+    - name: Sign the Kafka server CSR with the CA key and cert
+      community.crypto.openssl_certificate:
+        path: "{{ kafka_ssl_cert_file_signed }}"
+        csr_path: "{{ kafka_ssl_cert_file }}"
+        ownca_path: "{{ kafka_ssl_ca_cert }}"
+        ownca_privatekey_path: "{{ kafka_ssl_ca_key }}"
+        ownca_privatekey_passphrase: "{{ kafka_ssl_key_passphrase }}"
+        provider: ownca
+        mode: '0644'
+
+    - name: Import the CA certificate into the Kafka server keystore
+      command: >
+        keytool -keystore {{ kafka_ssl_keystore_path }} -alias CARoot -import -file {{ kafka_ssl_ca_cert }}
+        -storepass {{ kafka_ssl_key_passphrase }} -keypass {{ kafka_ssl_key_passphrase }} -noprompt
+      args:
+        creates: "{{ kafka_ssl_keystore_path }}"
+
+    - name: Import the signed certificate back into the Kafka server keystore
+      command: >
+        keytool -keystore {{ kafka_ssl_keystore_path }} -import -file {{ kafka_ssl_cert_file_signed }}
+        -storepass {{ kafka_ssl_key_passphrase }} -keypass {{ kafka_ssl_key_passphrase }} -noprompt
+      args:
+        creates: "{{ kafka_ssl_keystore_path }}"
+
+    - name: Import the CA certificate into the Kafka server truststore
+      command: >
+        keytool -keystore {{ kafka_ssl_truststore_path }} -alias CARoot -import -file {{ kafka_ssl_ca_cert }}
+        -storepass {{ kafka_ssl_key_passphrase }} -keypass {{ kafka_ssl_key_passphrase }} -noprompt
+      args:
+        creates: "{{ kafka_ssl_truststore_path }}"
+
+
+
+########################################################################################
+########################################################################################
+########################################################################################
+########################################################################################
+   kafka_ssl_country_name: "US"
+   kafka_ssl_common_name: "Demo-Kafka"
+   kafka_ssl_key_passphrase: "kafkacertpass"
+   kafka_ssl_key_size: 4096
+   kafka_ssl_validity_days: 3650
+   kafka_ssl_keystore_path: "kafka.server.keystore.jks"
+   kafka_ssl_truststore_path: "kafka.server.truststore.jks"
+   kafka_ssl_ca_key: "ca-key"
+   kafka_ssl_ca_cert: "ca-cert"
+   kafka_ssl_cert_file: "cert-file"
+   kafka_ssl_cert_file_signed: "cert-file-signed"
+
+
+---
+- name: Generate the CA key
+  community.crypto.openssl_privatekey:
+    path: /root/ca-key
+    type: RSA
+    size: 4096
+    cipher: auto
+    passphrase: ""
+    mode: '0400'
+
+- name: Generate the CA certificate
+  community.crypto.x509_certificate:
+    path: /root/ca-cert
+    privatekey_path: /root/ca-key
+    provider: selfsigned
+    mode: '0644'
+
+
+- name: Generate keystore with key and certificate for the Kafka server
+  community.general.java_keystore:
+    keystore_path: /root/kafka.server.keystore-4.jks
+    name: kafka.server.keystore-4.jk
+    dest: /root/kafka.server.keystore-4.jks
+    alias: localhost
+    password:  kafkacertpass
+    #keystore_password: kafkacertpass
+    #key_password: kafkacertpass
+    validity: 3650
+    state: present
+    keystore_type: "pkcs12"
+    unsafe_writes: false
+
+
+- name: Generate a certificate signing request (CSR) for the Kafka server
+ command: >
+   keytool -keystore /root/kafka.server.keystore-4.jks -certreq -file {{ kafka_ssl_cert_file }}
+   -storepass {{ kafka_ssl_key_passphrase }} -keypass {{ kafka_ssl_key_passphrase }}
+ args:
+   creates: "{{ kafka_ssl_cert_file }}"
+
+
+- name: Sign the Kafka server CSR with the CA key and cert
+ community.crypto.openssl_certificate:
+   path: "{{ kafka_ssl_cert_file_signed }}"
+   csr_path: "{{ kafka_ssl_cert_file }}"
+   ownca_path: "{{ kafka_ssl_ca_cert }}"
+   ownca_privatekey_path: "{{ kafka_ssl_ca_key }}"
+   ownca_privatekey_passphrase: "{{ kafka_ssl_key_passphrase }}"
+   provider: ownca
+   mode: '0644'
+
+- name: Import the CA certificate into the Kafka server keystore
+ community.general.java_cert:
+   keystore_path: "{{ kafka_ssl_keystore_path }}"
+   alias: CARoot
+   cert_data: "{{ lookup('file', kafka_ssl_ca_cert) }}"
+   keystore_password: "{{ kafka_ssl_key_passphrase }}"
+   state: present
+
+- name: Import the signed certificate back into the Kafka server keystore
+ community.general.java_cert:
+   keystore_path: "{{ kafka_ssl_keystore_path }}"
+   alias: localhost
+   cert_data: "{{ lookup('file', kafka_ssl_cert_file_signed) }}"
+   keystore_password: "{{ kafka_ssl_key_passphrase }}"
+   state: present
+
+- name: Import the CA certificate into the Kafka server truststore
+ community.general.java_cert:
+   keystore_path: "{{ kafka_ssl_truststore_path }}"
+   alias: CARoot
+   cert_data: "{{ lookup('file', kafka_ssl_ca_cert) }}"
+   keystore_password: "{{ kafka_ssl_key_passphrase }}"
+   state: present
+
+
+
+
