@@ -10,6 +10,13 @@
     name: "{{ kafka_base_image }}:{{ kafka_image_version }}"
     source: pull
 
+- name: Copy file with owner and permissions
+  ansible.builtin.copy:
+    src: /files/certs/
+    dest: "{{ KAFKA_CERT_DIRECTORY }}"
+    owner: root
+    group: root
+    mode: '0644'
 
 
 
