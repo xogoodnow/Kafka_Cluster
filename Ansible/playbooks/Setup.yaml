@@ -11,28 +11,28 @@
         name: "{{ item }}"
       with_items:
         - $PWD/roles/Pre_Setup
-        - $PWD/roles/Install_Docker
+        - $PWD/roles/Docker_Install
 
 
     - name: Install and Configure Kafka instances
       include_role:
         name: "{{ item }}"
       with_items:
-        - $PWD/roles/Install_Kafka_Dockerized
+        - $PWD/roles/Kafka_Install_Dockerized
       when: mode == 'kafka'
 
-    - name: Set up Kafka exoprter
+    - name: Set up Kafka Exoprter
       include_role:
         name: "{{ item }}"
       with_items:
-        - $PWD/roles/Install_Kafka_Exporter
+        - $PWD/roles/Kafka_Install_Exporter
       when: mode == 'kafka'
 
     - name: Set up Kafka GUI
       include_role:
         name: "{{ item }}"
       with_items:
-        - $PWD/roles/Install_Kafka_GUI
+        - $PWD/roles/Kafka_Install_GUI
       when: mode == 'kafka'
 
 
@@ -40,6 +40,6 @@
       include_role:
         name: "{{ item }}"
       with_items:
-        - $PWD/roles/Node_Exporter
+        - $PWD/roles/Node_Exporter_Setup
       when: mode == 'monitoring'
 
