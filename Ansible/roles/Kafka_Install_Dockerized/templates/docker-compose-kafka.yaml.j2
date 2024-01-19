@@ -14,7 +14,7 @@ services:
     #   - "9093:9093"
     #   - "9094:9094"
     environment:
-      ALLOW_PLAINTEXT_LISTENER: "yes"
+      ALLOW_PLAINTEXT_LISTENER: "no"
       BITNAMI_DEBUG: "yes"
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
       KAFKA_BROKER_ID: "{{ ansible_play_hosts_all.index(inventory_hostname) + 1 }}"
@@ -24,7 +24,7 @@ services:
       KAFKA_CFG_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
       KAFKA_CFG_PROCESS_ROLES: 'broker,controller'
       KAFKA_KRAFT_CLUSTER_ID: "{{ KAFKA_CLUSTER_ID }}"
-      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT'
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:SASL_SSL,INTERNAL:SASL_SSL,EXTERNAL:SASL_SSL'
 
 {% set host_index = ansible_play_hosts_all.index(inventory_hostname) %}
 {% if host_index == 0 %}
@@ -76,13 +76,30 @@ services:
       KAFKA_CONTROLLER_PASSWORD: "{{ KAFKA_CONTROLLER_PASSWORD }}"
       KAFKA_CLIENT_PASSWORDS: "{{ KAFKA_CLIENT_PASSWORDS }}"
       KAFKA_CLIENT_USERS: "{{ KAFKA_CLIENT_USERS }}"
+      KAFKA_TLS_TYPE: JKS
       KAFKA_CFG_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
-      KAFKA_TLS_TYPE: PEM
+      KAFKA_CFG_PRODUCER_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
+      KAFKA_CFG_CONSUMER_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
+      KAFKA_TLS_CLIENT_AUTH: required
+      KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
+      KAFKA_CFG_SASL_MECHANISM_CONTROLLER_PROTOCOL: PLAIN
+      KAFKA_CFG_SSL_TRUSTSTORE_LOCATION: /opt/bitnami/kafka/config/certs/kafka.truststore.jks
+      KAFKA_CFG_SSL_TRUSTSTORE_PASSWORD: "{{ KAFKA_KEYSTORE_PASSWORD }}"
+      KAFKA_CFG_SSL_KEYSTORE_LOCATION: /opt/bitnami/kafka/config/certs/kafka.keystore.jks
+      KAFKA_CFG_SSL_KEYSTORE_PASSWORD: "{{ KAFKA_KEYSTORE_PASSWORD }}"
 
-
-
-
-
+    volumes:
+{% set host_index = ansible_play_hosts_all.index(inventory_hostname) %}
+{% if host_index == 0 %}
+      - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.keystore-1.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro"
+      - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro"
+{% elif host_index == 1 %}
+      - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.keystore-2.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro"
+      - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro"
+{% elif host_index == 2 %}
+      - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.keystore-3.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro"
+      - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro"
+{% endif %}
 
 
 
