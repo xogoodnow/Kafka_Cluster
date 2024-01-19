@@ -6,9 +6,9 @@ services:
     network_mode: host
     environment:
       KAFKA_BROKERS: "kafka-{{ ansible_play_hosts_all.index(inventory_hostname) + 1 }}"
-      KAFKA_TLS_ENABLED: true
-      KAFKA_TLS_INSECURESKIPTLSVERIFY: true
-      KAFKA_SASL_ENABLED: true
+      KAFKA_TLS_ENABLED: 'true'
+      KAFKA_TLS_INSECURESKIPTLSVERIFY: 'true'
+      KAFKA_SASL_ENABLED: 'true'
       KAFKA_SASL_USERNAME: "{{ KAFKA_CLIENT_PASSWORDS }}"
       KAFKA_SASL_PASSWORD: "{{ KAFKA_CLIENT_USERS }}"
     logging:
