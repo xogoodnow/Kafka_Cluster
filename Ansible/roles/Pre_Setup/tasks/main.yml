@@ -48,7 +48,7 @@
   copy:
     dest: /etc/resolvconf/resolv.conf.d/head
     content: |
-      nameserver {{ name_server }}
+      nameserver {{ NAME_SERVER }}
 
 
 - name: edit resolv.conf file
