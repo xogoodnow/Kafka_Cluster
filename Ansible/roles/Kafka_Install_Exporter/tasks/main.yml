@@ -16,14 +16,14 @@
 - name: Set the compose file for kowl
   template:
     src: "templates/docker-compose-exporter.yaml.j2"
-    dest: "/root/kafka/exporter/docker/docker-compose.yaml"
+    dest: "/root/Kafka/Exporter/Docker/docker-compose.yaml"
   when: mode == 'kafka'
 
 
 
 - name: Run the containers
   community.general.docker_compose:
-    project_src: "/root/kafka/exporter/docker/"
+    project_src: "/root/Kafka/Exporter/Docker/"
     pull: true
     recreate: never
     state: present
