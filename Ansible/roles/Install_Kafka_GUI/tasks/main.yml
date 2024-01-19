@@ -12,30 +12,30 @@
     group: root
     mode: "0777"
   with_items:
-    - /root/kafka/kowl
-    - /root/kafka/kowl/docker/
+    - /root/kafka/gui
+    - /root/kafka/gui/docker/
 
 
 
 - name: Pull the kafka image
   docker_image:
-    name: "{{ KAFKA_KOWL_BASE_IMAGE }}:{{ KAFKA_KOWL_image_version }}"
+    name: "{{ KAFKA_GUI_BASE_IMAGE }}:{{ KAFKA_GUI_IMAGE_VERSION }}"
     source: pull
 
 
 
 
-- name: Set the compose file for kowl
+- name: Set the compose file for gui
   template:
-    src: "templates/docker-compose-kowl.yaml.j2"
-    dest: "/root/kafka/kowl/docker/docker-compose.yaml"
+    src: "templates/docker-compose-gui.yaml.j2"
+    dest: "/root/kafka/gui/docker/docker-compose.yaml"
   when: mode == 'kafka'
 
 
 
 - name: Run the containers
   community.general.docker_compose:
-    project_src: "/root/kafka/kowl/docker/"
+    project_src: "/root/kafka/gui/docker/"
     pull: true
     recreate: never
     state: present
