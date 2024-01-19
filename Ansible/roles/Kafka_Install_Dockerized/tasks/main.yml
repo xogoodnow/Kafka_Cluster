@@ -23,14 +23,14 @@
 - name: Set the compose file for kafka-1
   template:
     src: "templates/docker-compose-kafka.yaml.j2"
-    dest: "/root/kafka/docker/docker-compose.yaml"
+    dest: "/root/Kafka/Docker/docker-compose.yaml"
   when: mode == 'kafka'
 
 
 
 - name: Run the containers
   community.general.docker_compose:
-    project_src: "/root/kafka/docker/"
+    project_src: "/root/Kafka/Docker/"
     pull: true
     recreate: never
     state: present

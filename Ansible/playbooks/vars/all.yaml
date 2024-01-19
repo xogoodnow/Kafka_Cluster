@@ -19,4 +19,4 @@ KAFKA_GUI_IMAGE_VERSION: latest
 KAFKA_EXPORTER_BASE_IMAGE: bitnami/kafka-exporter #danielqsj/kafka-exporter
 KAFKA_EXPORTER_VERSION: latest
 KAFKA_KEYSTORE_PASSWORD: kafkacertpass
-KAFKA_CERT_DIRECTORY: /root/Kafka/Config/Certs
+KAFKA_CERT_DIRECTORY: /root/Kafka/Config/Certs/
