@@ -74,7 +74,7 @@
 
 - name: Fetching the certs
   ansible.builtin.fetch:
-    src: "/root/{{ item.remote_file }}" #"{{ KAFKA_CERT_DIRECTORY }}"
+    src: "{{ KAFKA_CERT_DIRECTORY }}{ item.remote_file }}"
     dest: "$PWD/roles/Kafka_Install_Dockerized/files/certs/{{ item.local_file }}"
     flat: yes
   with_items:
