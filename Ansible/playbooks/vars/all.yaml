@@ -16,7 +16,7 @@ KAFKA_CLIENT_PASSWORDS: kafka-password
 KAFKA_CLIENT_USERS: kafka-client
 KAFKA_GUI_BASE_IMAGE:  docker.redpanda.com/redpandadata/console #quay.io/cloudhut/kowl
 KAFKA_GUI_IMAGE_VERSION: latest
-KAFKA_EXPORTER_BASE_IMAGE: bitnami/kafka-exporter #danielqsj/kafka-exporter
+KAFKA_EXPORTER_BASE_IMAGE: danielqsj/kafka-exporter #bitnami/kafka-exporter
 KAFKA_EXPORTER_VERSION: latest
 KAFKA_KEYSTORE_PASSWORD: kafkacertpass
 KAFKA_CERT_DIRECTORY: /root/Kafka/Config/Certs/
