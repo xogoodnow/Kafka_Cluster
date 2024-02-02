@@ -13,11 +13,11 @@
 - name: Generate FIRST keystore with key and certificate for the Kafka server
   shell:
     chdir: "{{ KAFKA_CERT_DIRECTORY }}"
-    cmd: "keytool -genkey -keystore {{ item }} -validity 3650 -storepass {{ KAFKA_KEYSTORE_PASSWORD }} -keypass {{ KAFKA_KEYSTORE_PASSWORD }} -dname 'CN=localhost' -storetype pkcs12 -keyalg RSA"
+    cmd: "keytool -genkey -keystore {{ item.keystore }} -validity 3650 -storepass {{ KAFKA_KEYSTORE_PASSWORD }} -keypass {{ KAFKA_KEYSTORE_PASSWORD }} -dname CN='{{ item.common_name | quote }}' -storetype pkcs12 -keyalg RSA"
   with_items:
-    - 'kafka.server.keystore-first-1.jks'
-    - 'kafka.server.keystore-second-2.jks'
-    - 'kafka.server.keystore-third-3.jks'
+    - { keystore: 'kafka.server.keystore-first-1.jks', common_name: 'kafka-1' }
+    - { keystore: 'kafka.server.keystore-second-2.jks', common_name: 'kafka-2' }
+    - { keystore: 'kafka.server.keystore-third-3.jks', common_name: 'kafka-3' }
 
 
 
