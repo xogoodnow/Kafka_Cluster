@@ -9,8 +9,8 @@ services:
       KAFKA_TLS_ENABLED: 'true'
       KAFKA_TLS_INSECURESKIPTLSVERIFY: 'true'
       KAFKA_SASL_ENABLED: 'true'
-      KAFKA_SASL_USERNAME: "{{ KAFKA_CLIENT_PASSWORDS }}"
-      KAFKA_SASL_PASSWORD: "{{ KAFKA_CLIENT_USERS }}"
+      KAFKA_SASL_USERNAME: "{{ KAFKA_CLIENT_USERS }}"
+      KAFKA_SASL_PASSWORD: "{{ KAFKA_CLIENT_PASSWORDS }}"
     logging:
       driver: json-file
       options:
