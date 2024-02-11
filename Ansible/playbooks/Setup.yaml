@@ -10,14 +10,14 @@
       include_role:
         name: "{{ item }}"
       with_items:
-        - $PWD/roles/Pre_Setup
-        - $PWD/roles/Docker_Install
+        - $PWD/roles/pre_setup
+        - $PWD/roles/docker_install
 
     - name: Pre Setup Kafka
       include_role:
         name: "{{ item }}"
       with_items:
-        - $PWD/roles/Kafka_Pre_Setup
+        - $PWD/roles/kafka_pre_setup
       when: mode == 'kafka'
 
 
@@ -25,7 +25,7 @@
       include_role:
         name: "{{ item }}"
       with_items:
-        - $PWD/roles/Kafka_Cert_Generation
+        - $PWD/roles/kafka_cert_generation
       when: mode == 'kafka' and kafka_number == '1'
 
 
@@ -33,21 +33,21 @@
       include_role:
         name: "{{ item }}"
       with_items:
-        - $PWD/roles/Kafka_Install_Dockerized
+        - $PWD/roles/kafka_install_dockerized
       when: mode == 'kafka'
 
     - name: Set Up Kafka Exoprter
       include_role:
         name: "{{ item }}"
       with_items:
-        - $PWD/roles/Kafka_Install_Exporter
+        - $PWD/roles/kafka_install_exporter
       when: mode == 'kafka'
 
     - name: Set Up Kafka GUI
       include_role:
         name: "{{ item }}"
       with_items:
-        - $PWD/roles/Kafka_Install_GUI
+        - $PWD/roles/kafka_install_gui
       when: mode == 'kafka'
 
 
@@ -55,6 +55,13 @@
       include_role:
         name: "{{ item }}"
       with_items:
-        - $PWD/roles/Node_Exporter_Setup
+        - $PWD/roles/node_exporter_setup
       when: mode == 'monitoring'
 
+
+    - name: Deploy the monitoring stack on monitoring nodes
+      include_role:
+        name: "{{ item }}"
+      with_items:
+        - $PWD/roles/victoria_metrics_setup
+      when: mode == 'monitoring'
