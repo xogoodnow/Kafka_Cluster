@@ -12,6 +12,8 @@ NODE_EXPORTER_VERSION: "latest"
 KAFKA_INTER_BROKER_USER: "kafka-inter"
 kafka_cpu_limit: 4
 kafka_memory_limit: 12g
+kafka_exporter_cpu_limit: 1
+kafka_exporter_memory_limit: 2g
 KAFKA_INTER_BROKER_PASSWORD: "kafka-password"
 KAFKA_CONTROLLER_USER: "kafka-controller"
 KAFKA_CONTROLLER_PASSWORD: "kafka-password"
