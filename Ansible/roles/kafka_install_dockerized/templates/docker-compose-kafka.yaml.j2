@@ -7,7 +7,7 @@ services:
     logging:
       driver: json-file
       options:
-        max-size: "5g"
+        max-size: "{{ kafka_max_log_size }}"
     ulimits:
       memlock:
         soft: -1
