@@ -7,23 +7,23 @@
 
 - name: Pull the kafka image
   docker_image:
-    name: "{{ KAFKA_GUI_BASE_IMAGE }}:{{ KAFKA_GUI_IMAGE_VERSION }}"
+    name: "{{ kafka_gui_base_image }}:{{ kafka_gui_image_version }}"
     source: pull
 
 
 
 
-- name: Set the compose file for kowl
+- name: Set the compose file for kafka GUI
   template:
     src: "templates/docker-compose-exporter.yaml.j2"
-    dest: "/root/Kafka/Exporter/Docker/docker-compose.yaml"
+    dest: "{{ kafka_directory_base_path }}Kafka/Exporter/Docker/docker-compose.yaml"
   when: mode == 'kafka'
 
 
 
 - name: Run the containers
   community.general.docker_compose:
-    project_src: "/root/Kafka/Exporter/Docker/"
+    project_src: "{{ kafka_directory_base_path }}Kafka/Exporter/Docker/"
     pull: true
     recreate: never
     state: present

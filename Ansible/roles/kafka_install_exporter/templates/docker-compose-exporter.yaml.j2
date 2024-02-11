@@ -1,10 +1,10 @@
 version: "{{ docker_api_version }}"
 services:
   kafka-exporter:
-    image: "{{ KAFKA_EXPORTER_BASE_IMAGE }}:{{ KAFKA_EXPORTER_VERSION }}"
+    image: "{{ kafka_exporter_base_image }}:{{ kafka_exporter_version }}"
     container_name: "kafka-exporter-{{ ansible_hostname }}-{{ ansible_play_hosts_all.index(inventory_hostname) + 1 }}"
     network_mode: host
-    command: "--kafka.server=kafka-{{ ansible_play_hosts_all.index(inventory_hostname) + 1 }}:9094 --kafka.version={{ KAFKA_IMAGE_VERSION }} --sasl.enabled --sasl.username={{ KAFKA_CLIENT_USERS }} --sasl.password={{ KAFKA_CLIENT_PASSWORDS }} --sasl.mechanism=plain --tls.insecure-skip-tls-verify --tls.enabled"
+    command: "--kafka.server=kafka-{{ ansible_play_hosts_all.index(inventory_hostname) + 1 }}:9094 --kafka.version={{ kafka_image_version }} --sasl.enabled --sasl.username={{ kafka_client_users }} --sasl.password={{ kafka_client_passwords }} --sasl.mechanism=plain --tls.insecure-skip-tls-verify --tls.enabled"
     logging:
       driver: json-file
       options:
