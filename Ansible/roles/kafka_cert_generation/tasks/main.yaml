@@ -6,13 +6,13 @@
 
 - name: Generate the CA key and certificate
   shell:
-    chdir: "{{ kafka_cert_directory_base_path }}"
+    chdir: "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}"
     cmd: "openssl req -new -newkey rsa:4096 -days 3650 -x509 -subj '/CN=kafka-cluster' -keyout ca-key -out ca-cert -nodes"
 
 
 - name: Generate all keystores with key and certificate for the Kafka server
   shell:
-    chdir: "{{ kafka_cert_directory_base_path }}"
+    chdir: "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}"
     cmd: "keytool -genkey -keystore {{ item.keystore }} -validity 3650 -storepass {{ kafka_keystore_password }} -keypass {{ kafka_keystore_password }} -dname CN='{{ item.common_name | quote }}' -storetype pkcs12 -keyalg RSA"
   with_items:
     - { keystore: 'kafka.server.keystore-first-1.jks', common_name: 'kafka-1' }
@@ -23,7 +23,8 @@
 
 - name: Generate a certificate signing request (CSR) for the Kafka server
   shell:
-    chdir: "{{ kafka_cert_directory_base_path }}"
+    chdir: "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}"
+
     cmd: "keytool -keystore {{ item.keystore }} -certreq -file {{ item.cert_file }} -storepass {{ kafka_keystore_password }}  -keypass {{ kafka_keystore_password }} "
   with_items:
     - { keystore: 'kafka.server.keystore-first-1.jks', cert_file: 'cert-file-first-1' }
@@ -34,7 +35,7 @@
 
 - name: Sign the Kafka server CSR with the CA key and cert
   shell:
-    chdir: "{{ kafka_cert_directory_base_path }}"
+    chdir: "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}"
     cmd: "openssl x509 -req -CA ca-cert -CAkey ca-key -in {{ item.cert_file }} -out {{ item.sigend_cert_file }} -days 3650 -CAcreateserial -passin pass:{{ kafka_keystore_password }}"
   with_items:
     - { cert_file: 'cert-file-first-1', sigend_cert_file: 'cert-file-signed-first-1'}
@@ -45,7 +46,7 @@
 
 - name: Import the CA certificate into the Kafka server keystore
   shell:
-    chdir: "{{ kafka_cert_directory_base_path }}"
+    chdir: "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}"
     cmd: "keytool -keystore {{ item }} -alias CARoot -import -file ca-cert -storepass {{ kafka_keystore_password }}  -keypass {{ kafka_keystore_password }}  -noprompt"
   with_items:
     - 'kafka.server.keystore-first-1.jks'
@@ -56,7 +57,8 @@
 
 - name: Import the signed certificate back into the Kafka server keystore
   shell:
-    chdir: "{{ kafka_cert_directory_base_path }}"
+    chdir: "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}"
+
     cmd: "keytool -keystore {{ item.keystore }} -import -file {{ item.sigend_cert_file }} -storepass {{ kafka_keystore_password }}  -keypass {{ kafka_keystore_password }}  -noprompt"
   with_items:
     - { keystore: 'kafka.server.keystore-first-1.jks', sigend_cert_file: 'cert-file-signed-first-1' }
@@ -68,7 +70,7 @@
 
 - name: Import the CA certificate into the Kafka server truststore
   shell:
-    chdir: "{{ kafka_cert_directory_base_path }}"
+    chdir: "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}"
     cmd: "keytool -keystore kafka.server.truststore.jks -alias CARoot -import -file ca-cert -storepass {{ kafka_keystore_password }}  -keypass {{ kafka_keystore_password }}  -noprompt"
 
 

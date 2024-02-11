@@ -26,4 +26,6 @@ kafka_gui_image_version: "latest"
 kafka_exporter_base_image: "danielqsj/kafka-exporter" #bitnami/kafka-exporter
 kafka_exporter_version: "latest"
 kafka_keystore_password: "kafkacertpass"
-kafka_cert_directory: "/root/Kafka/Config/Certs/"
+kafka_directory_base_path: "/root/"
+kafka_cert_directory_base_path: "/Kafka/Config/Certs/"
+kafka_cert_mounted_directory_base_path: "/Kafka/Config/Certs/"
