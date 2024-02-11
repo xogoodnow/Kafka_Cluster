@@ -12,13 +12,13 @@
 - name: pull the required image for Node Exporter
   docker_image:
     name: prom/node-exporter
-    tag: "{{ NODE_EXPORTER_VERSION }}"
+    tag: "{{ node_exporter_version }}"
     source: pull
 
 - name: Run the container for Node Exporter
   docker_container:
     name: node-exporter
-    image: prom/node-exporter:{{ NODE_EXPORTER_VERSION }}
+    image: prom/node-exporter:{{ node_exporter_version }}
     restart_policy: unless-stopped
     state: started
     command:
