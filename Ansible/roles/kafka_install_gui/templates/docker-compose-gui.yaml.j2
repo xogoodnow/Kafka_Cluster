@@ -1,7 +1,7 @@
 version: "{{ docker_api_version }}"
 services:
   kafka-kowl:
-    image: "{{ KAFKA_GUI_BASE_IMAGE }}:{{ KAFKA_GUI_IMAGE_VERSION }}"
+    image: "{{ kafka_gui_base_image }}:{{ kafka_gui_image_version }}"
     container_name: "kafka-gui-{{ ansible_hostname }}-{{ ansible_play_hosts_all.index(inventory_hostname) + 1 }}"
     network_mode: host
     environment:
@@ -9,8 +9,8 @@ services:
       KAFKA_TLS_ENABLED: 'true'
       KAFKA_TLS_INSECURESKIPTLSVERIFY: 'true'
       KAFKA_SASL_ENABLED: 'true'
-      KAFKA_SASL_USERNAME: "{{ KAFKA_CLIENT_USERS }}"
-      KAFKA_SASL_PASSWORD: "{{ KAFKA_CLIENT_PASSWORDS }}"
+      KAFKA_SASL_USERNAME: "{{ kafka_client_users }}"
+      KAFKA_SASL_PASSWORD: "{{ kafka_client_passwords }}"
     logging:
       driver: json-file
       options:
