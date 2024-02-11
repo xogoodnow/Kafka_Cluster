@@ -19,7 +19,8 @@ services:
       memlock:
         soft: -1
         hard: -1
-
+    mem_limit: "{{ kafka_gui_memory_limit }}"
+    cpus: "{{ kafka_gui_cpu_limit }}"
 
 
 
