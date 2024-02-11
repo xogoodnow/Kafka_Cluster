@@ -58,7 +58,6 @@
 - name: Import the signed certificate back into the Kafka server keystore
   shell:
     chdir: "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}"
-
     cmd: "keytool -keystore {{ item.keystore }} -import -file {{ item.sigend_cert_file }} -storepass {{ kafka_keystore_password }}  -keypass {{ kafka_keystore_password }}  -noprompt"
   with_items:
     - { keystore: 'kafka.server.keystore-first-1.jks', sigend_cert_file: 'cert-file-signed-first-1' }
