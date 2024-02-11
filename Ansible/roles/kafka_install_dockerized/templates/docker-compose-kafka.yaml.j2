@@ -1,7 +1,7 @@
 version: "{{ docker_api_version }}"
 services:
   kafka_1:
-    image: "{{ KAFKA_BASE_IMAGE }}:{{ KAFKA_IMAGE_VERSION }}"
+    image: "{{ kafka_base_image }}:{{ kafka_image_version }}"
     container_name: kafka-{{ ansible_play_hosts_all.index(inventory_hostname) + 1 }}-{{ ansible_hostname }}
     hostname: kafka-{{ ansible_play_hosts_all.index(inventory_hostname) + 1 }}
     logging:
@@ -68,12 +68,12 @@ services:
       KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
       KAFKA_CFG_LOG_FLUSH_INTERVAL_MESSAGES: 15000
       KAFKA_CFG_LOG_RETENTION_BYTES: -1
-      KAFKA_INTER_BROKER_PASSWORD: "{{ KAFKA_INTER_BROKER_PASSWORD }}"
-      KAFKA_INTER_BROKER_USER: "{{ KAFKA_INTER_BROKER_USER }}"
-      KAFKA_CONTROLLER_USER: "{{ KAFKA_CONTROLLER_USER }}"
-      KAFKA_CONTROLLER_PASSWORD: "{{ KAFKA_CONTROLLER_PASSWORD }}"
-      KAFKA_CLIENT_PASSWORDS: "{{ KAFKA_CLIENT_PASSWORDS }}"
-      KAFKA_CLIENT_USERS: "{{ KAFKA_CLIENT_USERS }}"
+      KAFKA_INTER_BROKER_PASSWORD: "{{ kafka_inter_broker_password }}"
+      KAFKA_INTER_BROKER_USER: "{{ kafka_inter_broker_user }}"
+      KAFKA_CONTROLLER_USER: "{{ kafka_controller_user }}"
+      KAFKA_CONTROLLER_PASSWORD: "{{ kafka_controller_password }}"
+      KAFKA_CLIENT_PASSWORDS: "{{ kafka_client_passwords }}"
+      KAFKA_CLIENT_USERS: "{{ kafka_client_users }}"
       KAFKA_TLS_TYPE: JKS
       KAFKA_CFG_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
       KAFKA_CFG_PRODUCER_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
@@ -82,24 +82,22 @@ services:
       KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
       KAFKA_CFG_SASL_MECHANISM_CONTROLLER_PROTOCOL: PLAIN
       KAFKA_CFG_SSL_TRUSTSTORE_LOCATION: /opt/bitnami/kafka/config/certs/kafka.truststore.jks
-      KAFKA_CFG_SSL_TRUSTSTORE_PASSWORD: "{{ KAFKA_KEYSTORE_PASSWORD }}"
+      KAFKA_CFG_SSL_TRUSTSTORE_PASSWORD: "{{ kafka_keystore_password }}"
       KAFKA_CFG_SSL_KEYSTORE_LOCATION: /opt/bitnami/kafka/config/certs/kafka.keystore.jks
-      KAFKA_CFG_SSL_KEYSTORE_PASSWORD: "{{ KAFKA_KEYSTORE_PASSWORD }}"
+      KAFKA_CFG_SSL_KEYSTORE_PASSWORD: "{{ kafka_keystore_password }}"
 
     volumes:
 {% set host_index = ansible_play_hosts_all.index(inventory_hostname) %}
 {% if host_index == 0 %}
-      - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.keystore-first-1.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro"
-      - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro"
+      - "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}kafka.server.keystore-first-1.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro"
+      - "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}kafka.server.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro"
 {% elif host_index == 1 %}
-      - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.keystore-second-2.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro"
-      - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro"
+      - "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}kafka.server.keystore-second-2.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro"
+      - "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}kafka.server.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro"
 {% elif host_index == 2 %}
-      - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.keystore-third-3.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro"
-      - "{{ KAFKA_CERT_DIRECTORY }}kafka.server.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro"
+      - "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}kafka.server.keystore-third-3.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro"
+      - "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}kafka.server.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro"
 {% endif %}
-
-
 
 
 
