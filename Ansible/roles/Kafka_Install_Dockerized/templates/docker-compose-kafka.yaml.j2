@@ -8,6 +8,10 @@ services:
       driver: json-file
       options:
         max-size: "5g"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     network_mode: host
     # ports:
     #   - "9092:9092"
