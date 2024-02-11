@@ -10,6 +10,7 @@ KAFKA_IMAGE_VERSION: "3.4.1"
 KAFKA_CLUSTER_ID: "ciWo7IWazngRchmPES6q5A=="
 NODE_EXPORTER_VERSION: "latest"
 KAFKA_INTER_BROKER_USER: "kafka-inter"
+kafka_cpu_limit: 8
 KAFKA_INTER_BROKER_PASSWORD: "kafka-password"
 KAFKA_CONTROLLER_USER: "kafka-controller"
 KAFKA_CONTROLLER_PASSWORD: "kafka-password"
