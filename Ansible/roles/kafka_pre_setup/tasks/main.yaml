@@ -14,21 +14,21 @@
 
 - name: Create the required directories
   file:
-    path: "{{ item }}"
+    path: "{{ kafka_directory_base_path }}{{ item }}"
     state: directory
     owner: root
     group: root
     mode: "0777"
   with_items:
-    - /root/Kafka
-    - /root/Kafka/Docker/
-    - /root/Kafka/Config/
-    - /root/Kafka/Config/Certs
-    - /root/Kafka/Data/
-    - /root/Kafka/Exporter
-    - /root/Kafka/Exporter/Docker/
-    - /root/Kafka/Gui
-    - /root/Kafka/Gui/Docker/
+    - Kafka
+    - Kafka/Docker/
+    - Kafka/Config/
+    - Kafka/Config/Certs
+    - Kafka/Data/
+    - Kafka/Exporter
+    - Kafka/Exporter/Docker/
+    - Kafka/Gui
+    - Kafka/Gui/Docker/
 
 
 
