@@ -1,29 +1,29 @@
 docker_api_version: "2.4"
-NAME_SERVER: "8.8.8.8"
-VMAGENT_VERSION: "latest"
-VICTORIA_METRICS_VERSION: "latest"
-GRAFANA_VERSION: "latest"
-VMALERT_VERSION: "latest"
-ALERTMANAGER_VERSION: "latest"
-KAFKA_BASE_IMAGE: "bitnami/kafka"
-KAFKA_IMAGE_VERSION: "3.4.1"
-KAFKA_CLUSTER_ID: "ciWo7IWazngRchmPES6q5A=="
-NODE_EXPORTER_VERSION: "latest"
-KAFKA_INTER_BROKER_USER: "kafka-inter"
+name_server: "8.8.8.8"
+vmagent_version: "latest"
+victoria_metrics_version: "latest"
+grafana_version: "latest"
+vmalert_version: "latest"
+alertmanager_version: "latest"
+kafka_base_image: "bitnami/kafka"
+kafka_image_version: "3.4.1"
+kafka_cluster_id: "ciWo7IWazngRchmPES6q5A=="
+node_exporter_version: "latest"
+kafka_inter_broker_user: "kafka-inter"
 kafka_cpu_limit: 4
 kafka_memory_limit: 12g
 kafka_exporter_cpu_limit: 1
 kafka_exporter_memory_limit: 2g
 kafka_gui_cpu_limit: 2
 kafka_gui_memory_limit: 4g
-KAFKA_INTER_BROKER_PASSWORD: "kafka-password"
-KAFKA_CONTROLLER_USER: "kafka-controller"
-KAFKA_CONTROLLER_PASSWORD: "kafka-password"
-KAFKA_CLIENT_PASSWORDS: "kafka-password"
-KAFKA_CLIENT_USERS: "kafka-client"
-KAFKA_GUI_BASE_IMAGE:  "docker.redpanda.com/redpandadata/console" #quay.io/cloudhut/kowl
-KAFKA_GUI_IMAGE_VERSION: "latest"
-KAFKA_EXPORTER_BASE_IMAGE: "danielqsj/kafka-exporter" #bitnami/kafka-exporter
-KAFKA_EXPORTER_VERSION: "latest"
-KAFKA_KEYSTORE_PASSWORD: "kafkacertpass"
-KAFKA_CERT_DIRECTORY: "/root/Kafka/Config/Certs/"
+kafka_inter_broker_password: "kafka-password"
+kafka_controller_user: "kafka-controller"
+kafka_controller_password: "kafka-password"
+kafka_client_passwords: "kafka-password"
+kafka_client_users: "kafka-client"
+kafka_gui_base_image:  "docker.redpanda.com/redpandadata/console" #quay.io/cloudhut/kowl
+kafka_gui_image_version: "latest"
+kafka_exporter_base_image: "danielqsj/kafka-exporter" #bitnami/kafka-exporter
+kafka_exporter_version: "latest"
+kafka_keystore_password: "kafkacertpass"
+kafka_cert_directory: "/root/Kafka/Config/Certs/"
