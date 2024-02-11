@@ -12,6 +12,8 @@ services:
       memlock:
         soft: -1
         hard: -1
+    mem_limit: "{{ kafka_memory_limit }}"
+    cpus: "{{ kafka_cpu_limit }}"
     network_mode: host
     # ports:
     #   - "9092:9092"
