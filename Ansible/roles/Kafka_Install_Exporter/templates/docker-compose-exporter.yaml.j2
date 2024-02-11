@@ -1,4 +1,4 @@
-version: '3.8'
+version: "{{ docker_api_version }}"
 services:
   kafka-exporter:
     image: "{{ KAFKA_EXPORTER_BASE_IMAGE }}:{{ KAFKA_EXPORTER_VERSION }}"
