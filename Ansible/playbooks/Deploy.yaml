@@ -1,0 +1,26 @@
+---
+- name: General setup
+  hosts: all
+  become: true
+  roles:
+    - role: general
+      tags: general-setup
+
+- name: setting up kafka cluster
+  hosts: kafka
+  become: true
+  roles:
+    - role: kafka_cluster
+      tags: kafka-setup
+
+
+- name: Set up the monitoring stack
+  hosts: monitoring
+  become: true
+  tasks:
+    - name: Include monitoring roles
+      include_role:
+        name: "{{ item }}"
+      loop:
+        - $PWD/roles/victoria_metrics_setup
+      when: mode == 'monitoring'
