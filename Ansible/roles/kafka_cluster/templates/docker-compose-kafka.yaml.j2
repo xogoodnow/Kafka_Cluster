@@ -1,0 +1,108 @@
+version: "{{ docker_api_version }}"
+services:
+  kafka_1:
+    image: "{{ kafka_base_image }}:{{ kafka_image_version }}"
+    container_name: kafka-{{ ansible_play_hosts_all.index(inventory_hostname) + 1 }}-{{ ansible_hostname }}
+    hostname: kafka-{{ ansible_play_hosts_all.index(inventory_hostname) + 1 }}
+    logging:
+      driver: json-file
+      options:
+        max-size: "{{ kafka_max_log_size }}"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: "{{ kafka_memory_limit }}"
+    cpus: "{{ kafka_cpu_limit }}"
+    network_mode: host
+    # ports:
+    #   - "9092:9092"
+    #   - "9093:9093"
+    #   - "9094:9094"
+    environment:
+      ALLOW_PLAINTEXT_LISTENER: "no"
+      BITNAMI_DEBUG: "yes"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_BROKER_ID: "{{ ansible_play_hosts_all.index(inventory_hostname) + 1 }}"
+      KAFKA_CFG_NODE_ID: "{{ ansible_play_hosts_all.index(inventory_hostname) + 1 }}"
+      KAFKA_ENABLE_KRAFT: "yes"
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
+      KAFKA_CFG_PROCESS_ROLES: 'broker,controller'
+      KAFKA_KRAFT_CLUSTER_ID: "{{ KAFKA_CLUSTER_ID }}"
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:SASL_SSL,INTERNAL:SASL_SSL,EXTERNAL:SASL_SSL'
+{% set host_index = ansible_play_hosts_all.index(inventory_hostname) %}
+{% if host_index == 0 %}
+      KAFKA_CFG_LISTENERS: 'INTERNAL://kafka-1:9092,CONTROLLER://kafka-1:9093,EXTERNAL://kafka-1:9094'
+      KAFKA_CFG_ADVERTISED_LISTENERS: 'INTERNAL://kafka-1:9092,EXTERNAL://kafka-1:9094'
+{% elif host_index == 1 %}
+      KAFKA_CFG_LISTENERS: 'INTERNAL://kafka-2:9092,CONTROLLER://kafka-2:9093,EXTERNAL://kafka-2:9094'
+      KAFKA_CFG_ADVERTISED_LISTENER: 'INTERNAL://kafka-2:9092,EXTERNAL://kafka-2:9094'
+{% elif host_index == 2 %}
+      KAFKA_CFG_LISTENERS: 'INTERNAL://kafka-3:9092,CONTROLLER://kafka-3:9093,EXTERNAL://kafka-3:9094'
+      KAFKA_CFG_ADVERTISED_LISTENER: 'INTERNAL://kafka-3:9092,EXTERNAL://kafka-3:9094'
+{% endif %}
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: '1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093'
+      KAFKA_CFG_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "false"
+      KAFKA_CFG_CONNECTIONS_MAX_IDLE_MS: 15000
+      KAFKA_CFG_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_CFG_DELETE_TOPIC_ENABLE: "true"
+      KAFKA_CFG_GROUP_MAX_SESSION_TIMEOUT_MS: 55000
+      KAFKA_CFG_GROUP_MIN_SESSION_TIMEOUT_MS: 10
+      KAFKA_CFG_LEADER_IMBALANCE_PER_BROKER_PERCENTAGE: 15
+      KAFKA_CFG_LOG_CLEANER_DELETE_RETENTION_MS: 86400000
+      KAFKA_CFG_LOG_CLEANER_MIN_CLEANABLE_RATIO: 0.5
+      KAFKA_CFG_LOG_CLEANUP_POLICY: delete
+      KAFKA_CFG_LOG_MESSAGE_TIMESTAMP_TYPE: CreateTime
+      KAFKA_CFG_MAX_INCREMENTAL_FETCH_SESSION_CACHE_SLOTS: 2000
+      KAFKA_CFG_MESSAGE_MAX_BYTES: 2097180
+      KAFKA_CFG_MIN_INSYNC_REPLICAS: 2
+      KAFKA_CFG_REPLICA_FETCH_MAX_BYTES: 2097152
+      KAFKA_CFG_REPLICA_FETCH_RESPONSE_MAX_BYTES: 2097152
+      KAFKA_CFG_REPLICA_LAG_TIME_MAX_MS: 45000
+      KAFKA_CFG_TRANSACTION_MAX_TIMEOUT_MS: 900000
+      KAFKA_CFG_UNCLEAN_LEADER_ELECTION_ENABLE: "false"
+      KAFKA_CFG_NUM_NETWORK_THREADS: 8
+      KAFKA_CFG_NUM_IO_THREADS: 12
+      KAFKA_CFG_NUM_RECOVERY_THREADS_PER_DATA_DIR: 2
+      KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+      KAFKA_CFG_LOG_FLUSH_INTERVAL_MESSAGES: 15000
+      KAFKA_CFG_LOG_RETENTION_BYTES: -1
+      KAFKA_INTER_BROKER_PASSWORD: "{{ kafka_inter_broker_password }}"
+      KAFKA_INTER_BROKER_USER: "{{ kafka_inter_broker_user }}"
+      KAFKA_CONTROLLER_USER: "{{ kafka_controller_user }}"
+      KAFKA_CONTROLLER_PASSWORD: "{{ kafka_controller_password }}"
+      KAFKA_CLIENT_PASSWORDS: "{{ kafka_client_passwords }}"
+      KAFKA_CLIENT_USERS: "{{ kafka_client_users }}"
+      KAFKA_TLS_TYPE: JKS
+      KAFKA_CFG_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
+      KAFKA_CFG_PRODUCER_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
+      KAFKA_CFG_CONSUMER_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
+      KAFKA_TLS_CLIENT_AUTH: required
+      KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
+      KAFKA_CFG_SASL_MECHANISM_CONTROLLER_PROTOCOL: PLAIN
+      KAFKA_CFG_SSL_TRUSTSTORE_LOCATION: {{ kafka_cert_mounted_directory_base_path }}kafka.truststore.jks
+      KAFKA_CFG_SSL_TRUSTSTORE_PASSWORD: "{{ kafka_keystore_password }}"
+      KAFKA_CFG_SSL_KEYSTORE_LOCATION: {{ kafka_cert_mounted_directory_base_path }}kafka.keystore.jks
+      KAFKA_CFG_SSL_KEYSTORE_PASSWORD: "{{ kafka_keystore_password }}"
+
+    volumes:
+{% set host_index = ansible_play_hosts_all.index(inventory_hostname) %}
+{% if host_index == 0 %}
+      - "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}kafka.server.keystore-first-1.jks:{{ kafka_cert_mounted_directory_base_path }}kafka.keystore.jks:ro"
+      - "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}kafka.server.truststore.jks:{{ kafka_cert_mounted_directory_base_path }}kafka.truststore.jks:ro"
+{% elif host_index == 1 %}
+      - "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}kafka.server.keystore-second-2.jks:{{ kafka_cert_mounted_directory_base_path }}kafka.keystore.jks:ro"
+      - "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}kafka.server.truststore.jks:{{ kafka_cert_mounted_directory_base_path }}kafka.truststore.jks:ro"
+{% elif host_index == 2 %}
+      - "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}kafka.server.keystore-third-3.jks:{{ kafka_cert_mounted_directory_base_path }}kafka.keystore.jks:ro"
+      - "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}kafka.server.truststore.jks:{{ kafka_cert_mounted_directory_base_path }}kafka.truststore.jks:ro"
+{% endif %}
+
+
+
+
+
+
+
+
