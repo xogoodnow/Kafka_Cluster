@@ -20,7 +20,7 @@
 
 
 
-- name: Set the compose file for kafka-1
+- name: Set the compose file for kafka
   template:
     src: "templates/docker-compose-kafka.yaml.j2"
     dest: "{{ kafka_directory_base_path }}Kafka/Docker/docker-compose.yaml"

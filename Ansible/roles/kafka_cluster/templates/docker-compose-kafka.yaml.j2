@@ -29,7 +29,7 @@ services:
       KAFKA_CFG_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
       KAFKA_CFG_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
       KAFKA_CFG_PROCESS_ROLES: 'broker,controller'
-      KAFKA_KRAFT_CLUSTER_ID: "{{ KAFKA_CLUSTER_ID }}"
+      KAFKA_KRAFT_CLUSTER_ID: "{{ kafka_cluster_id }}"
       KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:SASL_SSL,INTERNAL:SASL_SSL,EXTERNAL:SASL_SSL'
 {% set host_index = ansible_play_hosts_all.index(inventory_hostname) %}
 {% if host_index == 0 %}
