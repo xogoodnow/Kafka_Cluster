@@ -1,0 +1,18 @@
+---
+
+- name: Preparing nodes for kafka cluster setup
+  include_tasks: kafka_pre_setup.yaml
+
+- name: Generate required certs for kafka
+  include_tasks: kafka_cert_generation.yaml
+  run_once: true
+
+- name: Set up kafka cluster
+  include_tasks: kafka_install_dockerized.yaml
+
+- name: Setup kafka exporter
+  include_tasks: kafka_exporter_setup.yaml
+
+- name: Setup kafka GUI
+  include_tasks: kafka_gui_install.yaml
+
