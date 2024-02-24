@@ -1,0 +1,36 @@
+---
+- name: check connectivity
+  ping:
+    data: alive
+
+
+
+- name: Pull the kafka image
+  docker_image:
+    name: "{{ kafka_gui_base_image }}:{{ kafka_gui_image_version }}"
+    source: pull
+
+
+
+
+- name: Set the compose file for gui
+  template:
+    src: "templates/docker-compose-gui.yaml.j2"
+    dest: "{{ kafka_directory_base_path }}Kafka/Gui/Docker/docker-compose.yaml"
+  when: mode == 'kafka'
+
+
+
+- name: Run the containers
+  community.general.docker_compose:
+    project_src: "{{ kafka_directory_base_path }}Kafka/Gui/Docker/"
+    pull: true
+    recreate: never
+    state: present
+    restarted: false
+    remove_orphans: no
+    remove_volumes: false
+
+
+
+
