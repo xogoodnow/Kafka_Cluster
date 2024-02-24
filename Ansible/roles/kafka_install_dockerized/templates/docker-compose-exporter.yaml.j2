@@ -1,0 +1,31 @@
+version: "{{ docker_api_version }}"
+services:
+  kafka-exporter:
+    image: "{{ kafka_exporter_base_image }}:{{ kafka_exporter_version }}"
+    container_name: "kafka-exporter-{{ ansible_hostname }}-{{ ansible_play_hosts_all.index(inventory_hostname) + 1 }}"
+    network_mode: host
+    command: "--kafka.server=kafka-{{ ansible_play_hosts_all.index(inventory_hostname) + 1 }}:9094 --kafka.version={{ kafka_image_version }} --sasl.enabled --sasl.username={{ kafka_client_users }} --sasl.password={{ kafka_client_passwords }} --sasl.mechanism=plain --tls.insecure-skip-tls-verify --tls.enabled"
+    logging:
+      driver: json-file
+      options:
+        max-size: "{{ kafka_exporter_max_log_size }}"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: "{{ kafka_exporter_memory_limit }}"
+    cpus: "{{ kafka_exporter_cpu_limit }}"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
