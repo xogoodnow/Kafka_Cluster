@@ -18,6 +18,9 @@
   hosts: monitoring
   become: true
   tasks:
+    - name: Include variables
+      include_vars: "all.yaml"
+
     - name: Include monitoring roles
       include_role:
         name: "{{ item }}"
