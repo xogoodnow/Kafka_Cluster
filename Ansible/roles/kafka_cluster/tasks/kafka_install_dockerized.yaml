@@ -1,0 +1,41 @@
+---
+- name: check connectivity
+  ping:
+    data: alive
+
+
+
+- name: Pull the kafka image
+  docker_image:
+    name: "{{ kafka_base_image }}:{{ kafka_image_version }}"
+    source: pull
+
+- name: Copy file with owner and permissions
+  ansible.builtin.copy:
+    src: files/certs/
+    dest: "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}"
+    owner: root
+    group: root
+    mode: '0644'
+
+
+
+- name: Set the compose file for kafka-1
+  template:
+    src: "templates/docker-compose-kafka.yaml.j2"
+    dest: "{{ kafka_directory_base_path }}Kafka/Docker/docker-compose.yaml"
+  when: mode == 'kafka'
+
+
+
+- name: Run the containers
+  community.general.docker_compose:
+    project_src: "{{ kafka_directory_base_path }}Kafka/Docker/"
+    pull: true
+    recreate: never
+    state: present
+    restarted: false
+    remove_orphans: no
+    remove_volumes: false
+
+
