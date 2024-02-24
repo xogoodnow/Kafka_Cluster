@@ -1,0 +1,94 @@
+---
+- name: check connectivity
+  ping:
+    data: alive
+
+
+- name: Generate the CA key and certificate
+  shell:
+    chdir: "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}"
+    cmd: "openssl req -new -newkey rsa:4096 -days 3650 -x509 -subj '/CN=kafka-cluster' -keyout ca-key -out ca-cert -nodes"
+
+
+- name: Generate all keystores with key and certificate for the Kafka server
+  shell:
+    chdir: "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}"
+    cmd: "keytool -genkey -keystore {{ item.keystore }} -validity 3650 -storepass {{ kafka_keystore_password }} -keypass {{ kafka_keystore_password }} -dname CN='{{ item.common_name | quote }}' -storetype pkcs12 -keyalg RSA"
+  with_items:
+    - { keystore: 'kafka.server.keystore-first-1.jks', common_name: 'kafka-1' }
+    - { keystore: 'kafka.server.keystore-second-2.jks', common_name: 'kafka-2' }
+    - { keystore: 'kafka.server.keystore-third-3.jks', common_name: 'kafka-3' }
+
+
+
+- name: Generate a certificate signing request (CSR) for the Kafka server
+  shell:
+    chdir: "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}"
+
+    cmd: "keytool -keystore {{ item.keystore }} -certreq -file {{ item.cert_file }} -storepass {{ kafka_keystore_password }}  -keypass {{ kafka_keystore_password }} "
+  with_items:
+    - { keystore: 'kafka.server.keystore-first-1.jks', cert_file: 'cert-file-first-1' }
+    - { keystore: 'kafka.server.keystore-second-2.jks', cert_file: 'cert-file-second-2' }
+    - { keystore: 'kafka.server.keystore-third-3.jks', cert_file: 'cert-file-third-3' }
+
+
+
+- name: Sign the Kafka server CSR with the CA key and cert
+  shell:
+    chdir: "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}"
+    cmd: "openssl x509 -req -CA ca-cert -CAkey ca-key -in {{ item.cert_file }} -out {{ item.sigend_cert_file }} -days 3650 -CAcreateserial -passin pass:{{ kafka_keystore_password }}"
+  with_items:
+    - { cert_file: 'cert-file-first-1', sigend_cert_file: 'cert-file-signed-first-1'}
+    - { cert_file: 'cert-file-second-2', sigend_cert_file: 'cert-file-signed-second-2'}
+    - { cert_file: 'cert-file-third-3', sigend_cert_file: 'cert-file-signed-third-3'}
+
+
+
+- name: Import the CA certificate into the Kafka server keystore
+  shell:
+    chdir: "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}"
+    cmd: "keytool -keystore {{ item }} -alias CARoot -import -file ca-cert -storepass {{ kafka_keystore_password }}  -keypass {{ kafka_keystore_password }}  -noprompt"
+  with_items:
+    - 'kafka.server.keystore-first-1.jks'
+    - 'kafka.server.keystore-second-2.jks'
+    - 'kafka.server.keystore-third-3.jks'
+
+
+
+- name: Import the signed certificate back into the Kafka server keystore
+  shell:
+    chdir: "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}"
+    cmd: "keytool -keystore {{ item.keystore }} -import -file {{ item.sigend_cert_file }} -storepass {{ kafka_keystore_password }}  -keypass {{ kafka_keystore_password }}  -noprompt"
+  with_items:
+    - { keystore: 'kafka.server.keystore-first-1.jks', sigend_cert_file: 'cert-file-signed-first-1' }
+    - { keystore: 'kafka.server.keystore-second-2.jks', sigend_cert_file: 'cert-file-signed-second-2' }
+    - { keystore: 'kafka.server.keystore-third-3.jks', sigend_cert_file: 'cert-file-signed-third-3' }
+
+
+
+
+- name: Import the CA certificate into the Kafka server truststore
+  shell:
+    chdir: "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}"
+    cmd: "keytool -keystore kafka.server.truststore.jks -alias CARoot -import -file ca-cert -storepass {{ kafka_keystore_password }}  -keypass {{ kafka_keystore_password }}  -noprompt"
+
+
+- name: Fetching the certs
+  ansible.builtin.fetch:
+    src: "{{ kafka_cert_directory_base_path }}{{ item.remote_file }}"
+    dest: "$PWD/roles/kafka_install_dockerized/files/certs/{{ item.local_file }}"
+    flat: yes
+  with_items:
+    - { remote_file: 'ca-cert', local_file: 'ca-cert' }
+    - { remote_file: 'ca-key', local_file: 'ca-key' }
+    - { remote_file: 'cert-file-first-1', local_file: 'cert-file-first-1' }
+    - { remote_file: 'cert-file-signed-first-1', local_file: 'cert-file-signed-first-1' }
+    - { remote_file: 'cert-file-signed-second-2', local_file: 'cert-file-signed-second-2' }
+    - { remote_file: 'cert-file-signed-third-3', local_file: 'cert-file-signed-third-3' }
+    - { remote_file: 'cert-file-first-1', local_file: 'cert-file-first-1' }
+    - { remote_file: 'cert-file-second-2', local_file: 'cert-file-second-2' }
+    - { remote_file: 'cert-file-third-3', local_file: 'cert-file-third-3' }
+    - { remote_file: 'kafka.server.keystore-first-1.jks', local_file: 'kafka.server.keystore-first-1.jks' }
+    - { remote_file: 'kafka.server.keystore-second-2.jks', local_file: 'kafka.server.keystore-second-2.jks' }
+    - { remote_file: 'kafka.server.keystore-third-3.jks', local_file: 'kafka.server.keystore-third-3.jks' }
+    - { remote_file: 'kafka.server.truststore.jks', local_file: 'kafka.server.truststore.jks' }
