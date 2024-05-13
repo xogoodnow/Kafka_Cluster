@@ -17,20 +17,23 @@
   template:
     src: "templates/docker-compose-gui.yaml.j2"
     dest: "{{ kafka_directory_base_path }}Kafka/Gui/Docker/docker-compose.yaml"
-  when: mode == 'kafka'
 
 
 
-- name: Run the containers
-  community.general.docker_compose:
-    project_src: "{{ kafka_directory_base_path }}Kafka/Gui/Docker/"
-    pull: true
-    recreate: never
-    state: present
-    restarted: false
-    remove_orphans: no
-    remove_volumes: false
+#- name: Run the containers
+#  community.general.docker_compose:
+#    project_src: "{{ kafka_directory_base_path }}Kafka/Gui/Docker/"
+#    pull: true
+#    recreate: never
+#    state: present
+#    restarted: false
+#    remove_orphans: no
+#    remove_volumes: false
 
 
+
+- name: Run the containers for kafka gui
+  shell:
+    cmd: "docker-compose -f {{ kafka_directory_base_path }}Kafka/Gui/Docker/docker-compose.yaml up -d "
 
 
