@@ -17,20 +17,21 @@
   template:
     src: "templates/docker-compose-exporter.yaml.j2"
     dest: "{{ kafka_directory_base_path }}Kafka/Exporter/Docker/docker-compose.yaml"
-  when: mode == 'kafka'
 
 
 
-- name: Run the containers
-  community.general.docker_compose:
-    project_src: "{{ kafka_directory_base_path }}Kafka/Exporter/Docker/"
-    pull: true
-    recreate: never
-    state: present
-    restarted: false
-    remove_orphans: no
-    remove_volumes: false
+#- name: Run the containers
+#  community.general.docker_compose:
+#    project_src: "{{ kafka_directory_base_path }}Kafka/Exporter/Docker/"
+#    pull: true
+#    recreate: never
+#    state: present
+#    restarted: false
+#    remove_orphans: no
+#    remove_volumes: false
 
 
-
+- name: Run the containers for kafka exporter
+  shell:
+    cmd: "docker-compose -f {{ kafka_directory_base_path }}Kafka/Exporter/Docker/docker-compose.yaml up -d "
 
