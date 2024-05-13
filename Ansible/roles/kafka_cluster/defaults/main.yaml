@@ -37,7 +37,7 @@ kafka_config_directory_path_on_host: "/Kafka/Config/Config/"
 kafka_config_directory_path_on_container: "/opt/bitnami/kafka/config/"
 kafka_logs_path_on_host: "/Kafka/Logs/"
 kafka_logs_path_on_container: "/opt/bitnami/kafka/logs/"
-
 kafka_max_log_size: "20g"
 kafka_exporter_max_log_size: "1g"
 kafka_gui_max_log_size: "5g"
+kafkacluster_deployment_environment: "lab"
