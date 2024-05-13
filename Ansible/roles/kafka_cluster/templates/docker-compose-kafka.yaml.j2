@@ -4,6 +4,7 @@ services:
     image: "{{ kafka_base_image }}:{{ kafka_image_version }}"
     container_name: kafka-{{ ansible_play_hosts_all.index(inventory_hostname) + 1 }}-{{ ansible_hostname }}
     hostname: kafka-{{ ansible_play_hosts_all.index(inventory_hostname) + 1 }}
+    restart: unless-stopped
     logging:
       driver: json-file
       options:
@@ -20,6 +21,7 @@ services:
     #   - "9093:9093"
     #   - "9094:9094"
     environment:
+      KAFKACLUSTER_DEPLOYMENT_ENVIRONMENT: "{{ kafkacluster_deployment_environment }}"
       ALLOW_PLAINTEXT_LISTENER: "no"
       BITNAMI_DEBUG: "yes"
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
@@ -47,7 +49,7 @@ services:
       KAFKA_CFG_CONNECTIONS_MAX_IDLE_MS: 15000
       KAFKA_CFG_DEFAULT_REPLICATION_FACTOR: 3
       KAFKA_CFG_DELETE_TOPIC_ENABLE: "true"
-      KAFKA_CFG_GROUP_MAX_SESSION_TIMEOUT_MS: 55000
+      KAFKA_CFG_GROUP_MAX_SESSION_TIMEOUT_MS: 60000
       KAFKA_CFG_GROUP_MIN_SESSION_TIMEOUT_MS: 10
       KAFKA_CFG_LEADER_IMBALANCE_PER_BROKER_PERCENTAGE: 15
       KAFKA_CFG_LOG_CLEANER_DELETE_RETENTION_MS: 86400000
@@ -98,6 +100,10 @@ services:
       - "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}kafka.server.keystore-third-3.jks:{{ kafka_cert_mounted_directory_base_path }}kafka.keystore.jks:ro"
       - "{{ kafka_directory_base_path }}{{ kafka_cert_directory_base_path }}kafka.server.truststore.jks:{{ kafka_cert_mounted_directory_base_path }}kafka.truststore.jks:ro"
 {% endif %}
+      - "{{ kafka_directory_base_path }}{{ kafka_data_directory_path_on_host }}:{{ kafka_data_directory_path_on_container }}"
+      - "{{ kafka_directory_base_path }}{{ kafka_logs_path_on_host }}:{{ kafka_logs_path_on_container }}"
+      #- "{{ kafka_directory_base_path }}{{ kafka_config_directory_path_on_host }}:{{ kafka_config_directory_path_on_container }}"
+
 
 
 
