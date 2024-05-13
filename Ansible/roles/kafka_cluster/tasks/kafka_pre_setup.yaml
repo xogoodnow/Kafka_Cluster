@@ -23,12 +23,15 @@
     - Kafka
     - Kafka/Docker/
     - Kafka/Config/
+    - Kafka/Config/Config
+    - Kafka/Logs/
     - Kafka/Config/Certs
     - Kafka/Data/
     - Kafka/Exporter
     - Kafka/Exporter/Docker/
     - Kafka/Gui
     - Kafka/Gui/Docker/
+
 
 
 
