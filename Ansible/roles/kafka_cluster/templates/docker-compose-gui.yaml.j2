@@ -4,6 +4,7 @@ services:
     image: "{{ kafka_gui_base_image }}:{{ kafka_gui_image_version }}"
     container_name: "kafka-gui-{{ ansible_hostname }}-{{ ansible_play_hosts_all.index(inventory_hostname) + 1 }}"
     network_mode: host
+    restart: unless-stopped
     environment:
       KAFKA_BROKERS: "kafka-{{ ansible_play_hosts_all.index(inventory_hostname) + 1 }}"
       KAFKA_TLS_ENABLED: 'true'
@@ -11,6 +12,7 @@ services:
       KAFKA_SASL_ENABLED: 'true'
       KAFKA_SASL_USERNAME: "{{ kafka_client_users }}"
       KAFKA_SASL_PASSWORD: "{{ kafka_client_passwords }}"
+      KAFKACLUSTER_DEPLOYMENT_ENVIRONMENT: "{{ kafkacluster_deployment_environment }}"
     logging:
       driver: json-file
       options:
